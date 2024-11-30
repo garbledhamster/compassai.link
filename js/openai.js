@@ -117,7 +117,7 @@ export const defaultConfig = {
   ] as Prompt[],
 
   model: {
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-4o-mini',
     temperature: 1,
     top_p: 0.9,
     frequency_penalty: 0,
