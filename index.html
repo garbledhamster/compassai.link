@@ -1,222 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Compass AI</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/a11y-dark.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+<head>
+  <meta charset="UTF-8">
+  <title>Compass AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body class="h-screen w-screen flex flex-col bg-gray-800 text-white overflow-hidden">
+  <!-- Header -->
+  <header class="bg-gray-700 h-24 flex items-center justify-center">
+    <h1 class="text-3xl font-bold">Compass AI</h1>
+  </header>
 
-    <!-- Internal Styles -->
-    <link rel="stylesheet" href="/css/tools.css" />
-    <link rel="stylesheet" href="/css/menu.css" />
-    <link rel="stylesheet" href="/css/animations.css" />
-    <link rel="stylesheet" href="/css/conversations.css" />
-    <link rel="stylesheet" href="/css/default.css" />
-    <link rel="stylesheet" href="/css/memories.css" />
-    <link rel="stylesheet" href="/css/output.css" />
-    <link rel="stylesheet" href="/css/input.css" />
-    <link rel="stylesheet" href="/css/messages.css" />
-    <link rel="stylesheet" href="/css/help.css" />
-    <link rel="stylesheet" href="/css/settings.css" />
-  </head>
-  <body>
-    <!-- Main Wrapper -->
-    <div class="wrapper" id="main-wrapper">
-      <!-- Tool Wrapper -->
-      <div class="wrapper" id="tool-wrapper">
-        <div id="tool">
-          <h1 class="tool-heading"></h1>
-          <h2 id="tool-description"></h2>
-          <!-- Tool Output -->
-          <div id="tool-output">
-            <!-- Menu Container -->
-            <div id="menu-container">
-              <div id="popoutContainer">
-                <div id="popoutMenu" class="popout-menu">
-                  <div id="popoutMenuHotBar">
-                    <button class="popoutMenuHotBarItem button" id="shortcutClipboardButton">
-                      <i data-feather="clipboard"></i>
-                    </button>
-                    <button class="popoutMenuHotBarItem button" id="shortcutTestButton">
-                      <i data-feather="code"></i>
-                    </button>
-                    <button class="popoutMenuHotBarItem button" id="shortcutHistoryToggle">
-                      <i data-feather="clock"></i>
-                    </button>
-                    <button class="popoutMenuHotBarItem button" id="shortcutMemoryButton">
-                      <i data-feather="bookmark"></i>
-                    </button>
-                    <button class="popoutMenuHotBarItem button" id="shortcutResetToDefaults">
-                      <i data-feather="refresh-cw"></i>
-                    </button>
-                    <button class="popoutMenuHotBarItem button" id="shortcutCloseToolButton">
-                      <i data-feather="x"></i>
-                    </button>
-                  </div>
-                  <div id="popoutMenuHeader"></div>
-                  <div id="popoutMenuItems">
-                    <div id="popoutCardContainers">
-                      <div id="guidesContainer">
-                        <div id="guides">
-                          <button class="popoutMenuItem" id="guideGettingStarted">
-                            <div class="popoutMenuItemIcon"><i data-feather="life-buoy"></i></div>
-                            <div class="popoutMenuItemText">Getting Started</div>
-                          </button>
-                          <button class="popoutMenuItem" id="guideMemoryUsage">
-                            <div class="popoutMenuItemIcon"><i data-feather="bookmark"></i></div>
-                            <div class="popoutMenuItemText">How to use the Memory system</div>
-                          </button>
-                          <button class="popoutMenuItem" id="guideTools">
-                            <div class="popoutMenuItemIcon"><i data-feather="book-open"></i></div>
-                            <div class="popoutMenuItemText">How to use the AI Tools</div>
-                          </button>
-                        </div>
-                      </div>
-                      <div class="menuContainer" id="memoriesContainer"></div>
-                      <div class="menuContainer" id="instructionsContainer"></div>
-                      <div class="menuContainer" id="notesContainer"></div>
-                      <div class="menuContainer" id="conversationsContainer"></div>
-                      <div class="menuContainer" id="toolsContainer">
-                        <div id="tools">
-                          <button class="popoutMenuItem" id="toolChatty">
-                            <div class="popoutMenuItemIcon"><i data-feather="message-square"></i></div>
-                            <div class="popoutMenuItemText">Chatty</div>
-                          </button>
-                          <button class="popoutMenuItem" id="toolSummarizer">
-                            <div class="popoutMenuItemIcon"><i data-feather="file-text"></i></div>
-                            <div class="popoutMenuItemText">Summarizer</div>
-                          </button>
-                          <button class="popoutMenuItem" id="toolArticulator">
-                            <div class="popoutMenuItemIcon"><i data-feather="book-open"></i></div>
-                            <div class="popoutMenuItemText">Articulator</div>
-                          </button>
-                        </div>
-                      </div>
-                      <div id="settingsContainer">
-                        <div id="settings">
-                          <div class="settingContainer" id="settingUserData">
-                            <div class="settingHeaderContainer">
-                              <div class="settingIcon"><i data-feather="user"></i></div>
-                              <div class="settingText">User Preferences</div>
-                            </div>
-                            <div class="settingBody">
-                              <div id="settinguserDataFullName">Full Name</div>
-                            </div>
-                          </div>
-                          <div class="settingContainer" id="settingThemes">
-                            <div class="settingHeaderContainer">
-                              <div class="settingIcon"><i data-feather="droplet"></i></div>
-                              <div class="settingText">Theming</div>
-                            </div>
-                            <div class="settingBody">
-                              <div class="settingBodyWrapper" id="settingThemePrimaryColor">
-                                <div class="settingText">Primary Color</div>
-                                <div class="setting"></div>
-                              </div>
-                              <div class="settingBodyWrapper" id="settingThemeSecondaryColor">
-                                <div class="settingText">Secondary Color</div>
-                                <div class="setting"></div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="settingContainer" id="settingConversations">
-                            <div class="settingHeaderContainer">
-                              <div class="settingIcon"><i data-feather="droplet"></i></div>
-                              <div class="settingText">Conversations</div>
-                            </div>
-                            <div class="settingBody">
-                              <div class="settingBodyWrapper">
-                                <div class="settingText">Conversation History</div>
-                                <div class="setting" id="settingConversationsHistory"></div>
-                              </div>
-                              <div class="settingBodyWrapper">
-                                <div class="settingText">Link Summarization</div>
-                                <div class="setting" id="settingConversationsLinkSummarization"></div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div id="popoutMenuItemButtons">
-                      <button class="popoutMenuItem" id="popoutMenuItemCompassGuides">
-                        <div class="popoutMenuItemIcon"><i data-feather="star"></i></div>
-                        <div class="popoutMenuItemText">Guides</div>
-                      </button>
-                      <button class="popoutMenuItem" id="popoutMenuItemMemories">
-                        <div class="popoutMenuItemIcon"><i data-feather="book"></i></div>
-                        <div class="popoutMenuItemText">Memories</div>
-                      </button>
-                      <button class="popoutMenuItem" id="popoutMenuItemInstructions">
-                        <div class="popoutMenuItemIcon"><i data-feather="terminal"></i></div>
-                        <div class="popoutMenuItemText">Instructions</div>
-                      </button>
-                      <button class="popoutMenuItem" id="popoutMenuItemNotes">
-                        <div class="popoutMenuItemIcon"><i data-feather="book-open"></i></div>
-                        <div class="popoutMenuItemText">Notes</div>
-                      </button>
-                      <button class="popoutMenuItem" id="popoutMenuItemTools">
-                        <div class="popoutMenuItemIcon"><i data-feather="tool"></i></div>
-                        <div class="popoutMenuItemText">Tools</div>
-                      </button>
-                      <button class="popoutMenuItem" id="popoutMenuItemConversations">
-                        <div class="popoutMenuItemIcon"><i data-feather="message-square"></i></div>
-                        <div class="popoutMenuItemText">Conversations</div>
-                      </button>
-                      <button class="popoutMenuItem" id="popoutMenuItemSettings">
-                        <div class="popoutMenuItemIcon"><i data-feather="settings"></i></div>
-                        <div class="popoutMenuItemText">Settings</div>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div id="tool-output-inner"></div>
-            <div id="tool-overflow-gradient-bottom" class="tool-overflow-gradient"></div>
-          </div>
-          <!-- Tool Input -->
-          <div id="tool-input">
-            <textarea class="textarea" id="user-input" placeholder="Enter anything..."></textarea>
-            <button type="submit" class="button" id="submit-button">
-              <i data-feather="arrow-right"></i>
-            </button>
-            <button class="button" aria-label="Toggle menu" id="menuButton">
-              <i data-feather="menu"></i>
-            </button>
-          </div>
+  <!-- Main Content -->
+  <main class="flex-1 flex overflow-hidden">
+    <!-- Conversations and Memories Sidebar -->
+    <aside class="w-1/4 bg-gray-600 p-4 overflow-y-auto">
+      <!-- Memories Section -->
+      <div id="memoriesContainer" class="mb-6">
+        <h2 class="text-xl font-semibold mb-2">Memories</h2>
+        <div id="memoriesList" class="space-y-2">
+          <!-- Memory Items will be appended here -->
         </div>
       </div>
-    </div>
-    <!-- Scripts -->
-    <div class="scripts-container">
-      <!-- REACT Scripts -->
-      <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-      <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/react-markdown/4.3.1/react-markdown.js" referrerpolicy="no-referrer"></script>
-      <!-- JQUERY Scripts -->
-      <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-      <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
-      <!-- Styling Scripts -->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/5.1.0/marked.min.js" integrity="sha512-j5KAPeir0rGl+OSddiUeUtUlG+GK7acI/kNQqrpjSSB1IlDUbj3VnQOyoW3GWpPj7i8CSfb0T+Q4IRHxAPRxCA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"></script>
-      <script src="https://unpkg.com/styled-components/dist/styled-components.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-      <!-- System Conversion Scripts -->
-      <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-      <!-- Internal Scripts -->
-      <script src="/js/tools.js" type="module"></script>
-      <script src="/js/react/comingsoon.jsx" type="text/babel"></script>
 
-      <script>
-        feather.replace();
-      </script>
+      <!-- Conversations Section -->
+      <div id="conversationsContainer" class="mb-6">
+        <h2 class="text-xl font-semibold mb-2">Conversations</h2>
+        <div id="conversationsList" class="space-y-2">
+          <!-- Conversation Items will be appended here -->
+        </div>
+      </div>
+
+      <!-- Settings Section -->
+      <div id="settingsContainer" class="mb-6">
+        <h2 class="text-xl font-semibold mb-2">Settings</h2>
+        <div class="space-y-4">
+          <!-- Theme Settings -->
+          <div>
+            <h3 class="font-semibold">Theme</h3>
+            <div class="flex space-x-2 mt-2">
+              <button id="themeLight" class="px-3 py-1 bg-white text-gray-800 rounded">Light</button>
+              <button id="themeDark" class="px-3 py-1 bg-gray-800 text-white rounded">Dark</button>
+            </div>
+          </div>
+          <!-- Other Settings can be added here -->
+        </div>
+      </div>
+    </aside>
+
+    <!-- Tool Output Area -->
+    <section class="flex-1 bg-gray-800 p-4 flex flex-col">
+      <div id="tool-output" class="flex-1 overflow-y-auto space-y-4">
+        <!-- Messages will be appended here -->
+      </div>
+      <div class="mt-4">
+        <!-- Input Area -->
+        <div class="flex space-x-2">
+          <textarea id="user-input" class="flex-1 p-2 rounded bg-gray-700 text-white focus:outline-none resize-none h-12" placeholder="Enter your message..."></textarea>
+          <button id="submit-button" class="w-12 h-12 bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center">
+            <i data-feather="arrow-right" class="text-white"></i>
+          </button>
+          <button id="menuButton" class="w-12 h-12 bg-gray-500 hover:bg-gray-600 rounded flex items-center justify-center">
+            <i data-feather="menu" class="text-white"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Popout Menu -->
+  <div id="popoutMenu" class="fixed bottom-20 right-5 bg-gray-700 rounded-t-lg shadow-lg hidden">
+    <div id="popoutMenuHotBar" class="flex space-x-2 p-2 border-b border-gray-600">
+      <button class="menu-button bg-blue-500 hover:bg-blue-600 p-2 rounded">
+        <i data-feather="clipboard" class="text-white"></i>
+      </button>
+      <button class="menu-button bg-green-500 hover:bg-green-600 p-2 rounded">
+        <i data-feather="code" class="text-white"></i>
+      </button>
+      <button class="menu-button bg-yellow-500 hover:bg-yellow-600 p-2 rounded">
+        <i data-feather="clock" class="text-white"></i>
+      </button>
+      <button class="menu-button bg-purple-500 hover:bg-purple-600 p-2 rounded">
+        <i data-feather="bookmark" class="text-white"></i>
+      </button>
+      <button class="menu-button bg-red-500 hover:bg-red-600 p-2 rounded">
+        <i data-feather="refresh-cw" class="text-white"></i>
+      </button>
+      <button class="menu-button bg-gray-500 hover:bg-gray-600 p-2 rounded" id="closeMenuButton">
+        <i data-feather="x" class="text-white"></i>
+      </button>
     </div>
-  </body>
+    <div class="p-4 space-y-4">
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+        <i data-feather="star"></i>
+        <span>Guides</span>
+      </button>
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+        <i data-feather="book"></i>
+        <span>Memories</span>
+      </button>
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+        <i data-feather="terminal"></i>
+        <span>Instructions</span>
+      </button>
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+        <i data-feather="book-open"></i>
+        <span>Notes</span>
+      </button>
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+        <i data-feather="tool"></i>
+        <span>Tools</span>
+      </button>
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+        <i data-feather="message-square"></i>
+        <span>Conversations</span>
+      </button>
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+        <i data-feather="settings"></i>
+        <span>Settings</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Terms of Service Overlay -->
+  <div id="termsOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white text-gray-800 rounded-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 overflow-y-auto max-h-screen">
+      <div class="flex flex-col items-center space-y-4">
+        <img src="https://via.placeholder.com/400x100?text=Compass+AI+Logo" alt="Compass AI Logo" class="w-full max-w-md">
+        <h1 class="text-2xl font-bold">Terms of Service</h1>
+        <ol class="list-decimal list-inside text-left space-y-2">
+          <li>This is an experimental tool that uses OpenAI's NLP API.</li>
+          <li>Information returned by the tool may not always be accurate or reliable.</li>
+          <li>The tool should be used for informational purposes only and should not be considered as professional advice.</li>
+          <li>OpenAI does not guarantee the correctness, completeness, or usefulness of the information provided.</li>
+          <li>This is an Alpha version of the tool, and frequent updates and improvements are expected.</li>
+          <li>Users are responsible for verifying the accuracy of the information obtained through the tool.</li>
+          <li>Any actions taken based on the information provided by the tool are at the user's own risk.</li>
+        </ol>
+        <p class="font-semibold">Version: Alpha 3.0.0</p>
+        <p>For support and further development, consider supporting Compass on Patreon:</p>
+        <a href="https://www.patreon.com/CompassAI" target="_blank">
+          <img src="https://via.placeholder.com/200x50?text=Patreon" alt="Patreon" class="w-48">
+        </a>
+        <p>Check out our development site for updates and more:</p>
+        <a href="https://ourtech.space/dev" target="_blank" class="text-blue-500 underline">OurTech Dev Site</a>
+        <div class="flex items-center space-x-2 mt-4">
+          <input type="checkbox" id="openAITermsCheckbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+          <label for="openAITermsCheckbox" class="flex items-center cursor-pointer">
+            I accept the <a href="https://openai.com/policies" target="_blank" class="text-blue-500 underline">OpenAI Terms of Service</a>
+          </label>
+        </div>
+        <button id="acceptTermsButton" class="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded disabled:opacity-50" disabled>
+          Accept Terms of Service
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/main.js"></script>
+</body>
 </html>
