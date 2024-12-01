@@ -85,10 +85,12 @@ function applyDarkTheme() {
 // Event listeners for theme buttons
 themeLight.addEventListener('click', () => {
   applyLightTheme();
+  appendMessage('system', 'Light theme applied.');
 });
 
 themeDark.addEventListener('click', () => {
   applyDarkTheme();
+  appendMessage('system', 'Dark theme applied.');
 });
 
 // Submit Button Logic
@@ -216,24 +218,14 @@ const exampleConversations = [
 exampleConversations.forEach(convo => addConversation(convo));
 
 // Guides Management Logic
-const guidesButtons = document.querySelectorAll('.menu-item span:contains("Guides")');
-
-const guidesContent = `
-<h2 class="text-xl font-semibold mb-2">Guides</h2>
-<p>Welcome to the Compass AI Guides section. Here you can find helpful tutorials and documentation to make the most out of Compass AI.</p>
-<ul class="list-disc list-inside">
-  <li><strong>Getting Started:</strong> Learn how to set up and use Compass AI effectively.</li>
-  <li><strong>Memory System:</strong> Understand how to utilize the memory features.</li>
-  <li><strong>AI Tools:</strong> Explore the different AI tools available within Compass AI.</li>
-</ul>
-`;
-
 const menuItems = document.querySelectorAll('.menu-item');
 
 // Function to handle menu item clicks
 menuItems.forEach(item => {
   item.addEventListener('click', () => {
-    const text = item.querySelector('span').textContent.trim();
+    const span = item.querySelector('span');
+    if (!span) return;
+    const text = span.textContent.trim();
     switch(text) {
       case 'Guides':
         displayGuides();
@@ -436,8 +428,6 @@ bookmarkButton.addEventListener('click', () => {
 refreshButton.addEventListener('click', () => {
   appendMessage('system', 'Application has been refreshed (mock).');
 });
-
-// Close Menu Button (already handled above)
 
 // Initialize Memories and Conversations with Mock Data
 const memoriesListInitial = [
