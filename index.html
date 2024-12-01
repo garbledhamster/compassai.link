@@ -75,54 +75,69 @@
   <!-- Popout Menu -->
   <div id="popoutMenu" class="fixed bottom-20 right-5 bg-gray-700 rounded-t-lg shadow-lg hidden">
     <div id="popoutMenuHotBar" class="flex space-x-2 p-2 border-b border-gray-600">
-      <button class="menu-button bg-blue-500 hover:bg-blue-600 p-2 rounded">
+      <button class="menu-button bg-blue-500 hover:bg-blue-600 p-2 rounded" data-menu="clipboard">
         <i data-feather="clipboard" class="text-white"></i>
       </button>
-      <button class="menu-button bg-green-500 hover:bg-green-600 p-2 rounded">
+      <button class="menu-button bg-green-500 hover:bg-green-600 p-2 rounded" data-menu="code">
         <i data-feather="code" class="text-white"></i>
       </button>
-      <button class="menu-button bg-yellow-500 hover:bg-yellow-600 p-2 rounded">
+      <button class="menu-button bg-yellow-500 hover:bg-yellow-600 p-2 rounded" data-menu="clock">
         <i data-feather="clock" class="text-white"></i>
       </button>
-      <button class="menu-button bg-purple-500 hover:bg-purple-600 p-2 rounded">
+      <button class="menu-button bg-purple-500 hover:bg-purple-600 p-2 rounded" data-menu="bookmark">
         <i data-feather="bookmark" class="text-white"></i>
       </button>
-      <button class="menu-button bg-red-500 hover:bg-red-600 p-2 rounded">
+      <button class="menu-button bg-red-500 hover:bg-red-600 p-2 rounded" data-menu="refresh">
         <i data-feather="refresh-cw" class="text-white"></i>
       </button>
-      <button class="menu-button bg-gray-500 hover:bg-gray-600 p-2 rounded" id="closeMenuButton">
+      <button class="menu-button bg-gray-500 hover:bg-gray-600 p-2 rounded" id="closeMenuButton" data-menu="close">
         <i data-feather="x" class="text-white"></i>
       </button>
     </div>
     <div class="p-4 space-y-4">
-      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600" data-menu="guides">
         <i data-feather="star"></i>
         <span>Guides</span>
       </button>
-      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600" data-menu="memories">
         <i data-feather="book"></i>
         <span>Memories</span>
       </button>
-      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600" data-menu="instructions">
         <i data-feather="terminal"></i>
         <span>Instructions</span>
       </button>
-      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600" data-menu="notes">
         <i data-feather="book-open"></i>
         <span>Notes</span>
       </button>
-      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600" data-menu="tools">
         <i data-feather="tool"></i>
         <span>Tools</span>
       </button>
-      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600" data-menu="conversations">
         <i data-feather="message-square"></i>
         <span>Conversations</span>
       </button>
-      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600" data-menu="settings">
         <i data-feather="settings"></i>
         <span>Settings</span>
       </button>
+    </div>
+  </div>
+
+  <!-- Modal for Menu Items -->
+  <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white text-gray-800 rounded-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 overflow-y-auto max-h-screen">
+      <div class="flex flex-col items-center space-y-4">
+        <h2 id="modalTitle" class="text-2xl font-bold">Title</h2>
+        <div id="modalContent" class="text-left">
+          <!-- Dynamic Content -->
+        </div>
+        <button id="closeModalButton" class="mt-4 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded">
+          Close
+        </button>
+      </div>
     </div>
   </div>
 
