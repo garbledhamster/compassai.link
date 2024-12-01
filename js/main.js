@@ -1,3 +1,5 @@
+// main.js
+
 // Initialize Feather Icons
 document.addEventListener('DOMContentLoaded', () => {
   feather.replace();
@@ -72,17 +74,38 @@ document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.classList.remove('dark');
     document.body.classList.remove('bg-gray-800', 'text-white');
     document.body.classList.add('bg-gray-200', 'text-gray-800');
+    saveThemePreference('light');
   });
 
   themeDark.addEventListener('click', () => {
     document.documentElement.classList.add('dark');
     document.body.classList.remove('bg-gray-200', 'text-gray-800');
     document.body.classList.add('bg-gray-800', 'text-white');
+    saveThemePreference('dark');
   });
 
-  // Theme Toggle Logic for Mobile (if applicable)
-  // If you have mobile theme buttons, add similar logic here
+  // Load Theme Preference on Page Load
+  loadThemePreference();
 });
+
+// Function to save theme preference
+function saveThemePreference(theme) {
+  localStorage.setItem('theme', theme);
+}
+
+// Function to load theme preference
+function loadThemePreference() {
+  const theme = localStorage.getItem('theme');
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark');
+    document.body.classList.remove('bg-gray-200', 'text-gray-800');
+    document.body.classList.add('bg-gray-800', 'text-white');
+  } else if (theme === 'light') {
+    document.documentElement.classList.remove('dark');
+    document.body.classList.remove('bg-gray-800', 'text-white');
+    document.body.classList.add('bg-gray-200', 'text-gray-800');
+  }
+}
 
 // Submit Button Logic
 document.addEventListener('DOMContentLoaded', () => {
@@ -97,6 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
       messageDiv.className = 'self-end bg-blue-500 text-white p-2 rounded-lg max-w-2/3';
     } else if (role === 'assistant') {
       messageDiv.className = 'self-start bg-gray-700 text-white p-2 rounded-lg max-w-2/3';
+    } else if (role === 'system') {
+      messageDiv.className = 'self-center bg-yellow-500 text-white p-2 rounded-lg max-w-2/3';
     }
     messageDiv.textContent = content;
     toolOutput.appendChild(messageDiv);
@@ -156,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let title = '';
       let content = '';
 
-      // Define mock content based on menu name
+      // Define content based on menu name
       switch (menuName) {
         case 'guides':
           title = 'Guides';
@@ -173,12 +198,12 @@ document.addEventListener('DOMContentLoaded', () => {
           title = 'Memories';
           content = `
             <p>This is the Memories section. Here you can review and manage your saved memories.</p>
-            <p><em>Note: Currently, this is mock content.</em></p>
-            <ul class="list-disc list-inside">
-              <li>Memory 1: Remember to check the project status.</li>
-              <li>Memory 2: Schedule a meeting with the team.</li>
-              <li>Memory 3: Update the documentation.</li>
-            </ul>
+            <div id="memoriesListModal" class="space-y-2">
+              <!-- Memory Items will be appended here dynamically -->
+            </div>
+            <button id="addMemoryButton" class="mt-4 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded">
+              Add Memory
+            </button>
           `;
           break;
         case 'instructions':
@@ -197,8 +222,13 @@ document.addEventListener('DOMContentLoaded', () => {
           title = 'Notes';
           content = `
             <p>This is the Notes section. You can add personal notes and reminders here.</p>
-            <p><em>Note: Currently, this is mock content.</em></p>
-            <textarea class="w-full p-2 rounded bg-gray-200 text-gray-800" placeholder="Write your notes here..."></textarea>
+            <textarea id="userNote" class="w-full p-2 rounded bg-gray-200 text-gray-800" placeholder="Write your notes here..."></textarea>
+            <button id="saveNoteButton" class="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">
+              Save Note
+            </button>
+            <div id="savedNotes" class="mt-4 space-y-2">
+              <!-- Saved Notes will be displayed here -->
+            </div>
           `;
           break;
         case 'tools':
@@ -216,27 +246,42 @@ document.addEventListener('DOMContentLoaded', () => {
           title = 'Conversations';
           content = `
             <p>Review your past conversations and interactions here.</p>
-            <p><em>Note: Currently, this is mock content.</em></p>
-            <ul class="list-disc list-inside">
-              <li>Conversation 1: Discussed project timelines.</li>
-              <li>Conversation 2: Brainstormed marketing strategies.</li>
-              <li>Conversation 3: Reviewed product features.</li>
-            </ul>
+            <div id="conversationsListModal" class="space-y-2">
+              <!-- Conversation Items will be appended here dynamically -->
+            </div>
+            <button id="addConversationButton" class="mt-4 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded">
+              Add Conversation
+            </button>
           `;
           break;
         case 'settings':
           title = 'Settings';
           content = `
             <p>Adjust your Compass AI settings:</p>
-            <ul class="list-disc list-inside">
-              <li><strong>Theme:</strong> Switch between Light and Dark modes.</li>
-              <li><strong>Notifications:</strong> Manage notification preferences.</li>
-              <li><strong>Account:</strong> Update your account details.</li>
-            </ul>
-            <div class="mt-4">
-              <h3 class="font-semibold">Account Settings</h3>
-              <button class="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">Change Password</button>
-              <button class="mt-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded">Delete Account</button>
+            <div class="space-y-4">
+              <!-- Theme Settings -->
+              <div>
+                <h3 class="font-semibold">Theme</h3>
+                <div class="flex space-x-2 mt-2">
+                  <button id="modalThemeLight" class="px-3 py-1 bg-white text-gray-800 rounded">Light</button>
+                  <button id="modalThemeDark" class="px-3 py-1 bg-gray-800 text-white rounded">Dark</button>
+                </div>
+              </div>
+              <!-- Conversation History Settings -->
+              <div>
+                <h3 class="font-semibold">Conversation History</h3>
+                <div class="flex items-center space-x-2 mt-2">
+                  <input type="checkbox" id="conversationHistoryToggle" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                  <label for="conversationHistoryToggle" class="cursor-pointer">Enable Conversation History</label>
+                </div>
+              </div>
+              <!-- Additional Settings -->
+              <div>
+                <h3 class="font-semibold">Advanced Settings</h3>
+                <button id="resetSettingsButton" class="mt-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded">
+                  Reset to Defaults
+                </button>
+              </div>
             </div>
           `;
           break;
@@ -299,6 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
           break;
         case 'refresh':
           message = 'Resetting settings to default...';
+          resetSettings();
           break;
         case 'close':
           // Already handled in menu toggle logic
@@ -310,4 +356,345 @@ document.addEventListener('DOMContentLoaded', () => {
       appendSystemMessage(message);
     });
   });
+
+  // Function to reset settings to default
+  function resetSettings() {
+    localStorage.removeItem('theme');
+    localStorage.removeItem('termsAccepted');
+    // Reset other settings as needed
+    location.reload(); // Reload the page to apply defaults
+  }
 });
+
+// Dynamic Content Handling for Modal Pages
+
+// Memories Modal Functionality
+document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('click', (event) => {
+    if (event.target.id === 'addMemoryButton') {
+      const memoryContent = prompt('Enter memory content:');
+      if (memoryContent) {
+        addMemory(memoryContent);
+        loadMemoriesModal();
+      }
+    }
+
+    if (event.target.id === 'saveNoteButton') {
+      const noteContent = document.getElementById('userNote').value.trim();
+      if (noteContent) {
+        saveNote(noteContent);
+        loadNotesModal();
+      }
+    }
+
+    if (event.target.id === 'addConversationButton') {
+      const conversationTitle = prompt('Enter conversation title:');
+      if (conversationTitle) {
+        addConversation(conversationTitle);
+        loadConversationsModal();
+      }
+    }
+
+    if (event.target.id === 'resetSettingsButton') {
+      if (confirm('Are you sure you want to reset all settings to default?')) {
+        resetSettings();
+      }
+    }
+
+    if (event.target.id === 'modalThemeLight') {
+      document.documentElement.classList.remove('dark');
+      document.body.classList.remove('bg-gray-800', 'text-white');
+      document.body.classList.add('bg-gray-200', 'text-gray-800');
+      saveThemePreference('light');
+    }
+
+    if (event.target.id === 'modalThemeDark') {
+      document.documentElement.classList.add('dark');
+      document.body.classList.remove('bg-gray-200', 'text-gray-800');
+      document.body.classList.add('bg-gray-800', 'text-white');
+      saveThemePreference('dark');
+    }
+
+    if (event.target.id === 'conversationHistoryToggle') {
+      toggleConversationHistory(event.target.checked);
+    }
+  });
+});
+
+// Function to add a memory
+function addMemory(content) {
+  const memoriesListModal = document.getElementById('memoriesListModal');
+  const memoryItem = document.createElement('div');
+  memoryItem.className = 'flex items-center justify-between bg-gray-200 text-gray-800 p-2 rounded';
+  memoryItem.innerHTML = `
+    <span>${content}</span>
+    <button class="removeMemoryButton text-red-500 hover:text-red-700" title="Remove Memory">
+      <i data-feather="trash-2"></i>
+    </button>
+  `;
+  memoriesListModal.appendChild(memoryItem);
+  feather.replace();
+}
+
+// Function to load memories into modal
+function loadMemoriesModal() {
+  const memoriesListModal = document.getElementById('memoriesListModal');
+  memoriesListModal.innerHTML = '';
+  // Fetch memories from localStorage or a data source
+  const memories = JSON.parse(localStorage.getItem('memories')) || [];
+  memories.forEach((memory) => {
+    const memoryItem = document.createElement('div');
+    memoryItem.className = 'flex items-center justify-between bg-gray-200 text-gray-800 p-2 rounded';
+    memoryItem.innerHTML = `
+      <span>${memory}</span>
+      <button class="removeMemoryButton text-red-500 hover:text-red-700" title="Remove Memory">
+        <i data-feather="trash-2"></i>
+      </button>
+    `;
+    memoriesListModal.appendChild(memoryItem);
+  });
+  feather.replace();
+
+  // Attach event listeners to remove buttons
+  const removeButtons = memoriesListModal.querySelectorAll('.removeMemoryButton');
+  removeButtons.forEach((button, index) => {
+    button.addEventListener('click', () => {
+      removeMemory(index);
+      loadMemoriesModal();
+    });
+  });
+}
+
+// Function to remove a memory
+function removeMemory(index) {
+  let memories = JSON.parse(localStorage.getItem('memories')) || [];
+  memories.splice(index, 1);
+  localStorage.setItem('memories', JSON.stringify(memories));
+}
+
+// Function to save a note
+function saveNote(content) {
+  const notesList = document.getElementById('savedNotes');
+  const noteItem = document.createElement('div');
+  noteItem.className = 'flex items-center justify-between bg-gray-200 text-gray-800 p-2 rounded';
+  noteItem.innerHTML = `
+    <span>${content}</span>
+    <button class="removeNoteButton text-red-500 hover:text-red-700" title="Remove Note">
+      <i data-feather="trash-2"></i>
+    </button>
+  `;
+  notesList.appendChild(noteItem);
+  feather.replace();
+
+  // Save to localStorage
+  let notes = JSON.parse(localStorage.getItem('notes')) || [];
+  notes.push(content);
+  localStorage.setItem('notes', JSON.stringify(notes));
+}
+
+// Function to load notes into modal
+function loadNotesModal() {
+  const savedNotes = document.getElementById('savedNotes');
+  savedNotes.innerHTML = '';
+  const notes = JSON.parse(localStorage.getItem('notes')) || [];
+  notes.forEach((note, index) => {
+    const noteItem = document.createElement('div');
+    noteItem.className = 'flex items-center justify-between bg-gray-200 text-gray-800 p-2 rounded';
+    noteItem.innerHTML = `
+      <span>${note}</span>
+      <button class="removeNoteButton text-red-500 hover:text-red-700" title="Remove Note">
+        <i data-feather="trash-2"></i>
+      </button>
+    `;
+    savedNotes.appendChild(noteItem);
+  });
+  feather.replace();
+
+  // Attach event listeners to remove buttons
+  const removeButtons = savedNotes.querySelectorAll('.removeNoteButton');
+  removeButtons.forEach((button, index) => {
+    button.addEventListener('click', () => {
+      removeNote(index);
+      loadNotesModal();
+    });
+  });
+}
+
+// Function to remove a note
+function removeNote(index) {
+  let notes = JSON.parse(localStorage.getItem('notes')) || [];
+  notes.splice(index, 1);
+  localStorage.setItem('notes', JSON.stringify(notes));
+}
+
+// Function to add a conversation
+function addConversation(title) {
+  const conversationsListModal = document.getElementById('conversationsListModal');
+  const conversationItem = document.createElement('div');
+  conversationItem.className = 'flex items-center justify-between bg-gray-200 text-gray-800 p-2 rounded';
+  conversationItem.innerHTML = `
+    <span>${title}</span>
+    <button class="removeConversationButton text-red-500 hover:text-red-700" title="Remove Conversation">
+      <i data-feather="trash-2"></i>
+    </button>
+  `;
+  conversationsListModal.appendChild(conversationItem);
+  feather.replace();
+}
+
+// Function to load conversations into modal
+function loadConversationsModal() {
+  const conversationsListModal = document.getElementById('conversationsListModal');
+  conversationsListModal.innerHTML = '';
+  const conversations = JSON.parse(localStorage.getItem('conversations')) || [];
+  conversations.forEach((conversation) => {
+    const conversationItem = document.createElement('div');
+    conversationItem.className = 'flex items-center justify-between bg-gray-200 text-gray-800 p-2 rounded';
+    conversationItem.innerHTML = `
+      <span>${conversation}</span>
+      <button class="removeConversationButton text-red-500 hover:text-red-700" title="Remove Conversation">
+        <i data-feather="trash-2"></i>
+      </button>
+    `;
+    conversationsListModal.appendChild(conversationItem);
+  });
+  feather.replace();
+
+  // Attach event listeners to remove buttons
+  const removeButtons = conversationsListModal.querySelectorAll('.removeConversationButton');
+  removeButtons.forEach((button, index) => {
+    button.addEventListener('click', () => {
+      removeConversation(index);
+      loadConversationsModal();
+    });
+  });
+}
+
+// Function to remove a conversation
+function removeConversation(index) {
+  let conversations = JSON.parse(localStorage.getItem('conversations')) || [];
+  conversations.splice(index, 1);
+  localStorage.setItem('conversations', JSON.stringify(conversations));
+}
+
+// Function to toggle conversation history
+function toggleConversationHistory(enabled) {
+  localStorage.setItem('conversationHistory', enabled);
+  if (!enabled) {
+    // Clear existing conversations
+    localStorage.removeItem('conversations');
+    document.getElementById('conversationsList').innerHTML = '';
+    document.getElementById('conversationsListModal').innerHTML = '';
+  }
+}
+
+// Function to reset settings to default
+function resetSettings() {
+  localStorage.removeItem('theme');
+  localStorage.removeItem('termsAccepted');
+  localStorage.removeItem('memories');
+  localStorage.removeItem('notes');
+  localStorage.removeItem('conversations');
+  localStorage.removeItem('conversationHistory');
+  // Reload the page to apply defaults
+  location.reload();
+}
+
+// Function to save theme preference
+function saveThemePreference(theme) {
+  localStorage.setItem('theme', theme);
+}
+
+// Load memories and conversations on page load
+document.addEventListener('DOMContentLoaded', () => {
+  loadMemories();
+  loadConversations();
+  loadNotes();
+});
+
+// Function to load memories into sidebar
+function loadMemories() {
+  const memoriesList = document.getElementById('memoriesList');
+  memoriesList.innerHTML = '';
+  const memories = JSON.parse(localStorage.getItem('memories')) || [];
+  memories.forEach((memory, index) => {
+    const memoryItem = document.createElement('div');
+    memoryItem.className = 'flex items-center justify-between bg-gray-200 text-gray-800 p-2 rounded';
+    memoryItem.innerHTML = `
+      <span>${memory}</span>
+      <button class="removeMemoryButton text-red-500 hover:text-red-700" title="Remove Memory">
+        <i data-feather="trash-2"></i>
+      </button>
+    `;
+    memoriesList.appendChild(memoryItem);
+  });
+  feather.replace();
+
+  // Attach event listeners to remove buttons
+  const removeButtons = memoriesList.querySelectorAll('.removeMemoryButton');
+  removeButtons.forEach((button, index) => {
+    button.addEventListener('click', () => {
+      removeMemory(index);
+      loadMemories();
+      loadMemoriesModal();
+    });
+  });
+}
+
+// Function to load conversations into sidebar
+function loadConversations() {
+  const conversationsList = document.getElementById('conversationsList');
+  conversationsList.innerHTML = '';
+  const conversations = JSON.parse(localStorage.getItem('conversations')) || [];
+  conversations.forEach((conversation, index) => {
+    const conversationItem = document.createElement('div');
+    conversationItem.className = 'flex items-center justify-between bg-gray-200 text-gray-800 p-2 rounded';
+    conversationItem.innerHTML = `
+      <span>${conversation}</span>
+      <button class="removeConversationButton text-red-500 hover:text-red-700" title="Remove Conversation">
+        <i data-feather="trash-2"></i>
+      </button>
+    `;
+    conversationsList.appendChild(conversationItem);
+  });
+  feather.replace();
+
+  // Attach event listeners to remove buttons
+  const removeButtons = conversationsList.querySelectorAll('.removeConversationButton');
+  removeButtons.forEach((button, index) => {
+    button.addEventListener('click', () => {
+      removeConversation(index);
+      loadConversations();
+      loadConversationsModal();
+    });
+  });
+}
+
+// Function to load notes into sidebar (if applicable)
+function loadNotes() {
+  const savedNotes = document.getElementById('savedNotes');
+  savedNotes.innerHTML = '';
+  const notes = JSON.parse(localStorage.getItem('notes')) || [];
+  notes.forEach((note, index) => {
+    const noteItem = document.createElement('div');
+    noteItem.className = 'flex items-center justify-between bg-gray-200 text-gray-800 p-2 rounded';
+    noteItem.innerHTML = `
+      <span>${note}</span>
+      <button class="removeNoteButton text-red-500 hover:text-red-700" title="Remove Note">
+        <i data-feather="trash-2"></i>
+      </button>
+    `;
+    savedNotes.appendChild(noteItem);
+  });
+  feather.replace();
+
+  // Attach event listeners to remove buttons
+  const removeButtons = savedNotes.querySelectorAll('.removeNoteButton');
+  removeButtons.forEach((button, index) => {
+    button.addEventListener('click', () => {
+      removeNote(index);
+      loadNotes();
+      loadNotesModal();
+    });
+  });
+}
