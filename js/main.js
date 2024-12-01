@@ -30,23 +30,39 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Menu Toggle Logic
-const menuButton = document.getElementById('menuButton');
+// Menu Toggle Logic for Desktop
 const popoutMenu = document.getElementById('popoutMenu');
-const closeMenuButton = document.getElementById('closeMenuButton');
 
+// Menu Toggle Logic for Mobile
+const menuButton = document.getElementById('menuButton');
+const mobileSidebar = document.getElementById('mobileSidebar');
+const closeMenuButton = document.getElementById('closeMenuButton');
+const themeLight = document.getElementById('themeLight');
+const themeDark = document.getElementById('themeDark');
+const themeLightMobile = document.getElementById('themeLightMobile');
+const themeDarkMobile = document.getElementById('themeDarkMobile');
+
+// Toggle Desktop Popout Menu
 menuButton.addEventListener('click', () => {
   popoutMenu.classList.toggle('hidden');
 });
 
-closeMenuButton.addEventListener('click', () => {
-  popoutMenu.classList.add('hidden');
+// Toggle Mobile Sidebar
+menuButton.addEventListener('click', () => {
+  mobileSidebar.classList.toggle('translate-x-full');
 });
 
-// Close Menu when clicking outside
+closeMenuButton.addEventListener('click', () => {
+  mobileSidebar.classList.add('translate-x-full');
+});
+
+// Close Mobile Sidebar when clicking outside
 document.addEventListener('click', (event) => {
-  if (!popoutMenu.contains(event.target) && !menuButton.contains(event.target)) {
-    popoutMenu.classList.add('hidden');
+  if (
+    !mobileSidebar.contains(event.target) &&
+    !menuButton.contains(event.target)
+  ) {
+    mobileSidebar.classList.add('translate-x-full');
   }
 });
 
@@ -54,13 +70,11 @@ document.addEventListener('click', (event) => {
 document.addEventListener('keydown', (event) => {
   if (event.altKey && event.key.toLowerCase() === 'm') {
     popoutMenu.classList.toggle('hidden');
+    mobileSidebar.classList.toggle('translate-x-full');
   }
 });
 
-// Theme Toggle Logic
-const themeLight = document.getElementById('themeLight');
-const themeDark = document.getElementById('themeDark');
-
+// Theme Toggle Logic for Desktop
 themeLight.addEventListener('click', () => {
   document.documentElement.classList.remove('dark');
   document.body.classList.remove('bg-gray-800', 'text-white');
@@ -73,10 +87,38 @@ themeDark.addEventListener('click', () => {
   document.body.classList.add('bg-gray-800', 'text-white');
 });
 
+// Theme Toggle Logic for Mobile
+themeLightMobile.addEventListener('click', () => {
+  document.documentElement.classList.remove('dark');
+  document.body.classList.remove('bg-gray-800', 'text-white');
+  document.body.classList.add('bg-gray-200', 'text-gray-800');
+  mobileSidebar.classList.add('translate-x-full');
+});
+
+themeDarkMobile.addEventListener('click', () => {
+  document.documentElement.classList.add('dark');
+  document.body.classList.remove('bg-gray-200', 'text-gray-800');
+  document.body.classList.add('bg-gray-800', 'text-white');
+  mobileSidebar.classList.add('translate-x-full');
+});
+
 // Submit Button Logic
 const submitButton = document.getElementById('submit-button');
 const userInput = document.getElementById('user-input');
 const toolOutput = document.getElementById('tool-output');
+
+// Function to append messages
+function appendMessage(role, content) {
+  const messageDiv = document.createElement('div');
+  if (role === 'user') {
+    messageDiv.className = 'self-end bg-blue-500 text-white p-2 rounded-lg max-w-2/3';
+  } else if (role === 'assistant') {
+    messageDiv.className = 'self-start bg-gray-700 text-white p-2 rounded-lg max-w-2/3';
+  }
+  messageDiv.textContent = content;
+  toolOutput.appendChild(messageDiv);
+  toolOutput.scrollTop = toolOutput.scrollHeight;
+}
 
 submitButton.addEventListener('click', () => {
   const message = userInput.value.trim();
@@ -100,38 +142,31 @@ userInput.addEventListener('keydown', (event) => {
   }
 });
 
-// Function to append messages
-function appendMessage(role, content) {
-  const messageDiv = document.createElement('div');
-  if (role === 'user') {
-    messageDiv.className = 'self-end bg-blue-500 text-white p-2 rounded-lg max-w-2/3';
-  } else if (role === 'assistant') {
-    messageDiv.className = 'self-start bg-gray-700 text-white p-2 rounded-lg max-w-2/3';
-  }
-  messageDiv.textContent = content;
-  toolOutput.appendChild(messageDiv);
-  toolOutput.scrollTop = toolOutput.scrollHeight;
-}
-
 // Memory Management Logic
 const memoriesList = document.getElementById('memoriesList');
+const memoriesListMobile = document.getElementById('memoriesListMobile');
 const conversationsList = document.getElementById('conversationsList');
+const conversationsListMobile = document.getElementById('conversationsListMobile');
 
+// Function to add memory (desktop and mobile)
 function addMemory(memory) {
-  // Check for duplicates
-  const existing = Array.from(memoriesList.children).find(child => child.textContent === memory.content);
-  if (existing) return;
+  // Check for duplicates in both desktop and mobile lists
+  const existingDesktop = Array.from(memoriesList.children).find(child => child.textContent === memory.content);
+  const existingMobile = Array.from(memoriesListMobile.children).find(child => child.textContent === memory.content);
+  if (existingDesktop || existingMobile) return;
 
-  const memoryDiv = document.createElement('div');
-  memoryDiv.className = 'flex items-center bg-gray-500 p-2 rounded-lg space-x-2';
-  memoryDiv.innerHTML = `
-    <span>${memory.icon}</span>
-    <div>
-      <h4 class="font-semibold">${memory.title}</h4>
-      <p class="text-sm">${memory.content}</p>
+  const memoryHTML = `
+    <div class="flex items-center bg-gray-500 p-2 rounded-lg space-x-2">
+      <span>${memory.icon}</span>
+      <div>
+        <h4 class="font-semibold">${memory.title}</h4>
+        <p class="text-sm">${memory.content}</p>
+      </div>
     </div>
   `;
-  memoriesList.appendChild(memoryDiv);
+
+  memoriesList.insertAdjacentHTML('beforeend', memoryHTML);
+  memoriesListMobile.insertAdjacentHTML('beforeend', memoryHTML);
 }
 
 // Example Memories
@@ -151,11 +186,19 @@ const exampleMemories = [
 exampleMemories.forEach(memory => addMemory(memory));
 
 // Conversations Management Logic
+const conversationsListBoth = [conversationsList, conversationsListMobile];
+
 function addConversation(conversation) {
-  const convoDiv = document.createElement('div');
-  convoDiv.className = 'bg-gray-500 p-2 rounded-lg cursor-pointer hover:bg-gray-600';
-  convoDiv.textContent = conversation.title;
-  conversationsList.appendChild(convoDiv);
+  conversationsListBoth.forEach(list => {
+    // Check for duplicates
+    const existing = Array.from(list.children).find(child => child.textContent === conversation.title);
+    if (existing) return;
+
+    const convoDiv = document.createElement('div');
+    convoDiv.className = 'bg-gray-500 p-2 rounded-lg cursor-pointer hover:bg-gray-600';
+    convoDiv.textContent = conversation.title;
+    list.appendChild(convoDiv);
+  });
 }
 
 // Example Conversations

@@ -11,14 +11,17 @@
 </head>
 <body class="h-screen w-screen flex flex-col bg-gray-800 text-white overflow-hidden">
   <!-- Header -->
-  <header class="bg-gray-700 h-24 flex items-center justify-center">
-    <h1 class="text-3xl font-bold">Compass AI</h1>
+  <header class="bg-gray-700 h-16 flex items-center justify-between px-4">
+    <h1 class="text-2xl font-bold">Compass AI</h1>
+    <button id="menuButton" class="md:hidden bg-gray-500 hover:bg-gray-600 p-2 rounded">
+      <i data-feather="menu" class="text-white"></i>
+    </button>
   </header>
 
   <!-- Main Content -->
   <main class="flex-1 flex overflow-hidden">
-    <!-- Conversations and Memories Sidebar -->
-    <aside class="w-1/4 bg-gray-600 p-4 overflow-y-auto">
+    <!-- Sidebar for Desktop -->
+    <aside class="hidden md:block w-1/4 bg-gray-600 p-4 overflow-y-auto">
       <!-- Memories Section -->
       <div id="memoriesContainer" class="mb-6">
         <h2 class="text-xl font-semibold mb-2">Memories</h2>
@@ -47,7 +50,50 @@
               <button id="themeDark" class="px-3 py-1 bg-gray-800 text-white rounded">Dark</button>
             </div>
           </div>
-          <!-- Other Settings can be added here -->
+          <!-- Additional Settings can be added here -->
+        </div>
+      </div>
+    </aside>
+
+    <!-- Sidebar for Mobile (Popout Menu) -->
+    <aside id="mobileSidebar" class="fixed inset-0 bg-gray-700 bg-opacity-95 z-50 transform translate-x-full transition-transform duration-300 md:hidden">
+      <div class="flex flex-col h-full p-4">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-semibold">Menu</h2>
+          <button id="closeMenuButton" class="bg-red-500 hover:bg-red-600 p-2 rounded">
+            <i data-feather="x" class="text-white"></i>
+          </button>
+        </div>
+        <!-- Memories Section -->
+        <div id="memoriesContainerMobile" class="mb-6">
+          <h3 class="text-lg font-semibold mb-2">Memories</h3>
+          <div id="memoriesListMobile" class="space-y-2">
+            <!-- Memory Items will be appended here -->
+          </div>
+        </div>
+
+        <!-- Conversations Section -->
+        <div id="conversationsContainerMobile" class="mb-6">
+          <h3 class="text-lg font-semibold mb-2">Conversations</h3>
+          <div id="conversationsListMobile" class="space-y-2">
+            <!-- Conversation Items will be appended here -->
+          </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settingsContainerMobile" class="mb-6">
+          <h3 class="text-lg font-semibold mb-2">Settings</h3>
+          <div class="space-y-4">
+            <!-- Theme Settings -->
+            <div>
+              <h4 class="font-semibold">Theme</h4>
+              <div class="flex space-x-2 mt-2">
+                <button id="themeLightMobile" class="px-3 py-1 bg-white text-gray-800 rounded">Light</button>
+                <button id="themeDarkMobile" class="px-3 py-1 bg-gray-800 text-white rounded">Dark</button>
+              </div>
+            </div>
+            <!-- Additional Settings can be added here -->
+          </div>
         </div>
       </div>
     </aside>
@@ -64,16 +110,13 @@
           <button id="submit-button" class="w-12 h-12 bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center">
             <i data-feather="arrow-right" class="text-white"></i>
           </button>
-          <button id="menuButton" class="w-12 h-12 bg-gray-500 hover:bg-gray-600 rounded flex items-center justify-center">
-            <i data-feather="menu" class="text-white"></i>
-          </button>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- Popout Menu -->
-  <div id="popoutMenu" class="fixed bottom-20 right-5 bg-gray-700 rounded-t-lg shadow-lg hidden">
+  <!-- Popout Menu (Additional Menus if Needed) -->
+  <div id="popoutMenu" class="fixed bottom-20 right-5 bg-gray-700 rounded-t-lg shadow-lg hidden md:block">
     <div id="popoutMenuHotBar" class="flex space-x-2 p-2 border-b border-gray-600">
       <button class="menu-button bg-blue-500 hover:bg-blue-600 p-2 rounded">
         <i data-feather="clipboard" class="text-white"></i>
@@ -89,9 +132,6 @@
       </button>
       <button class="menu-button bg-red-500 hover:bg-red-600 p-2 rounded">
         <i data-feather="refresh-cw" class="text-white"></i>
-      </button>
-      <button class="menu-button bg-gray-500 hover:bg-gray-600 p-2 rounded" id="closeMenuButton">
-        <i data-feather="x" class="text-white"></i>
       </button>
     </div>
     <div class="p-4 space-y-4">
