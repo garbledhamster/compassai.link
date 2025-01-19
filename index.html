@@ -1,950 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Compass AI</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- External Libraries -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/a11y-dark.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-  <!-- Internal Styles Removed -->
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
 </head>
-<body class="h-screen w-screen flex flex-col overflow-hidden fixed bg-gray-800">
-  <!-- Main Wrapper -->
-  <div class="flex-1 flex flex-col" id="main-wrapper">
-    <!-- Tool Wrapper -->
-    <div class="flex-1 flex flex-col px-2.5 bg-gray-800" id="tool-wrapper">
-      <div class="flex flex-col flex-1" id="tool">
-        <h1 class="text-2xl font-bold text-center mb-2 tool-heading"></h1>
-        <h2 class="text-xl text-center mb-4" id="tool-description"></h2>
-        <!-- Tool Output -->
-        <div class="flex-1 overflow-auto relative" id="tool-output">
-          <!-- Menu Container -->
-          <div id="menu-container" class="absolute bottom-20 right-5 z-50 max-w-md max-h-4/5 hidden shadow-lg rounded-t-md bg-gray-700 p-2 overflow-hidden">
-            <div id="popoutContainer">
-              <div id="popoutMenu" class="flex flex-col h-full">
-                <!-- HotBar -->
-                <div id="popoutMenuHotBar" class="flex flex-wrap justify-center items-center p-1 mb-2 gap-2 rounded-t-md">
-                  <button class="bg-gray-600 hover:bg-blue-700 text-white rounded-full w-12 h-12 shadow flex items-center justify-center" id="shortcutClipboardButton">
-                    <i data-feather="clipboard"></i>
-                  </button>
-                  <button class="bg-gray-600 hover:bg-blue-700 text-white rounded-full w-12 h-12 shadow flex items-center justify-center" id="shortcutTestButton">
-                    <i data-feather="code"></i>
-                  </button>
-                  <button class="bg-gray-600 hover:bg-blue-700 text-white rounded-full w-12 h-12 shadow flex items-center justify-center" id="shortcutHistoryToggle">
-                    <i data-feather="clock"></i>
-                  </button>
-                  <button class="bg-gray-600 hover:bg-blue-700 text-white rounded-full w-12 h-12 shadow flex items-center justify-center" id="shortcutMemoryButton">
-                    <i data-feather="bookmark"></i>
-                  </button>
-                  <button class="bg-gray-600 hover:bg-blue-700 text-white rounded-full w-12 h-12 shadow flex items-center justify-center" id="shortcutResetToDefaults">
-                    <i data-feather="refresh-cw"></i>
-                  </button>
-                  <button class="bg-gray-600 hover:bg-blue-700 text-white rounded-full w-12 h-12 shadow flex items-center justify-center" id="shortcutCloseToolButton">
-                    <i data-feather="x"></i>
-                  </button>
-                </div>
-                <!-- Menu Header -->
-                <div id="popoutMenuHeader" class="mb-2"></div>
-                <!-- Menu Items -->
-                <div id="popoutMenuItems" class="flex-1 overflow-y-auto">
-                  <div id="popoutCardContainers" class="flex flex-col gap-4">
-                    <!-- Guides Container -->
-                    <div id="guidesContainer" class="flex flex-col gap-2">
-                      <div id="guides" class="flex flex-col gap-2">
-                        <button class="bg-gray-600 hover:bg-gray-500 text-white rounded p-2 flex items-center" id="guideGettingStarted">
-                          <i data-feather="life-buoy" class="mr-2"></i>
-                          Getting Started
-                        </button>
-                        <button class="bg-gray-600 hover:bg-gray-500 text-white rounded p-2 flex items-center" id="guideMemoryUsage">
-                          <i data-feather="bookmark" class="mr-2"></i>
-                          How to use the Memory system
-                        </button>
-                        <button class="bg-gray-600 hover:bg-gray-500 text-white rounded p-2 flex items-center" id="guideTools">
-                          <i data-feather="book-open" class="mr-2"></i>
-                          How to use the AI Tools
-                        </button>
-                      </div>
-                    </div>
-                    <!-- Memories Container -->
-                    <div id="memoriesContainer" class="flex flex-col gap-5 p-2"></div>
-                    <!-- Instructions Container -->
-                    <div id="instructionsContainer" class="flex flex-col gap-5 p-2"></div>
-                    <!-- Notes Container -->
-                    <div id="notesContainer" class="flex flex-col gap-5 p-2"></div>
-                    <!-- Conversations Container -->
-                    <div id="conversationsContainer" class="flex flex-col gap-5 p-2 bg-white text-black"></div>
-                    <!-- Tools Container -->
-                    <div id="toolsContainer" class="flex flex-col gap-5 p-2">
-                      <div id="tools" class="flex flex-col gap-2">
-                        <button class="bg-gray-600 hover:bg-gray-500 text-white rounded p-2 flex items-center" id="toolChatty">
-                          <i data-feather="message-square" class="mr-2"></i>
-                          Chatty
-                        </button>
-                        <button class="bg-gray-600 hover:bg-gray-500 text-white rounded p-2 flex items-center" id="toolSummarizer">
-                          <i data-feather="file-text" class="mr-2"></i>
-                          Summarizer
-                        </button>
-                        <button class="bg-gray-600 hover:bg-gray-500 text-white rounded p-2 flex items-center" id="toolArticulator">
-                          <i data-feather="book-open" class="mr-2"></i>
-                          Articulator
-                        </button>
-                      </div>
-                    </div>
-                    <!-- Settings Container -->
-                    <div id="settingsContainer" class="flex flex-col gap-5 p-2">
-                      <div id="settings" class="flex flex-col gap-4">
-                        <!-- User Preferences -->
-                        <div class="bg-gray-200 border border-gray-300 rounded mb-4" id="settingUserData">
-                          <div class="bg-gray-300 font-bold p-2 rounded-t-md flex items-center min-w-[200px] max-w-[200px]">
-                            <i data-feather="user" class="mr-2"></i>
-                            <span>User Preferences</span>
-                          </div>
-                          <div class="p-2">
-                            <div id="settinguserDataFullName">Full Name</div>
-                          </div>
-                        </div>
-                        <!-- Theming -->
-                        <div class="bg-gray-200 border border-gray-300 rounded mb-4" id="settingThemes">
-                          <div class="bg-gray-300 font-bold p-2 rounded-t-md flex items-center min-w-[200px] max-w-[200px]">
-                            <i data-feather="droplet" class="mr-2"></i>
-                            <span>Theming</span>
-                          </div>
-                          <div class="p-2">
-                            <div class="flex justify-between items-center border-b border-gray-300 py-2" id="settingThemePrimaryColor">
-                              <span>Primary Color</span>
-                              <div class="setting"></div>
-                            </div>
-                            <div class="flex justify-between items-center border-b border-gray-300 py-2" id="settingThemeSecondaryColor">
-                              <span>Secondary Color</span>
-                              <div class="setting"></div>
-                            </div>
-                          </div>
-                        </div>
-                        <!-- Conversations -->
-                        <div class="bg-gray-200 border border-gray-300 rounded mb-4" id="settingConversations">
-                          <div class="bg-gray-300 font-bold p-2 rounded-t-md flex items-center">
-                            <i data-feather="droplet" class="mr-2"></i>
-                            <span>Conversations</span>
-                          </div>
-                          <div class="p-2">
-                            <div class="flex justify-between items-center border-b border-gray-300 py-2">
-                              <span>Conversation History</span>
-                              <div class="setting" id="settingConversationsHistory"></div>
-                            </div>
-                            <div class="flex justify-between items-center border-b border-gray-300 py-2">
-                              <span>Link Summarization</span>
-                              <div class="setting" id="settingConversationsLinkSummarization"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- Menu Item Buttons -->
-                <div id="popoutMenuItemButtons" class="flex flex-wrap justify-center gap-2 mt-2">
-                  <button class="bg-gray-600 hover:bg-gray-500 text-white rounded p-2 flex items-center" id="popoutMenuItemCompassGuides">
-                    <i data-feather="star" class="mr-2"></i>
-                    Guides
-                  </button>
-                  <button class="bg-gray-600 hover:bg-gray-500 text-white rounded p-2 flex items-center" id="popoutMenuItemMemories">
-                    <i data-feather="book" class="mr-2"></i>
-                    Memories
-                  </button>
-                  <button class="bg-gray-600 hover:bg-gray-500 text-white rounded p-2 flex items-center" id="popoutMenuItemInstructions">
-                    <i data-feather="terminal" class="mr-2"></i>
-                    Instructions
-                  </button>
-                  <button class="bg-gray-600 hover:bg-gray-500 text-white rounded p-2 flex items-center" id="popoutMenuItemNotes">
-                    <i data-feather="book-open" class="mr-2"></i>
-                    Notes
-                  </button>
-                  <button class="bg-gray-600 hover:bg-gray-500 text-white rounded p-2 flex items-center" id="popoutMenuItemTools">
-                    <i data-feather="tool" class="mr-2"></i>
-                    Tools
-                  </button>
-                  <button class="bg-gray-600 hover:bg-gray-500 text-white rounded p-2 flex items-center" id="popoutMenuItemConversations">
-                    <i data-feather="message-square" class="mr-2"></i>
-                    Conversations
-                  </button>
-                  <button class="bg-gray-600 hover:bg-gray-500 text-white rounded p-2 flex items-center" id="popoutMenuItemSettings">
-                    <i data-feather="settings" class="mr-2"></i>
-                    Settings
-                  </button>
-                </div>
-              </div>
+<body class="h-screen w-screen flex flex-col bg-gray-800 text-white overflow-hidden">
+  <!-- Header -->
+  <header class="bg-gray-700 h-24 flex items-center justify-center">
+    <h1 class="text-3xl font-bold">Compass AI</h1>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 flex overflow-hidden">
+    <!-- Conversations and Memories Sidebar -->
+    <aside class="w-1/4 bg-gray-600 p-4 overflow-y-auto">
+      <!-- Memories Section -->
+      <div id="memoriesContainer" class="mb-6">
+        <h2 class="text-xl font-semibold mb-2">Memories</h2>
+        <div id="memoriesList" class="space-y-2">
+          <!-- Memory Items will be appended here -->
+        </div>
+      </div>
+
+      <!-- Conversations Section -->
+      <div id="conversationsContainer" class="mb-6">
+        <h2 class="text-xl font-semibold mb-2">Conversations</h2>
+        <div id="conversationsList" class="space-y-2">
+          <!-- Conversation Items will be appended here -->
+        </div>
+      </div>
+
+      <!-- Settings Section -->
+      <div id="settingsContainer" class="mb-6">
+        <h2 class="text-xl font-semibold mb-2">Settings</h2>
+        <div class="space-y-4">
+          <!-- Theme Settings -->
+          <div>
+            <h3 class="font-semibold">Theme</h3>
+            <div class="flex space-x-2 mt-2">
+              <button id="themeLight" class="px-3 py-1 bg-white text-gray-800 rounded">Light</button>
+              <button id="themeDark" class="px-3 py-1 bg-gray-800 text-white rounded">Dark</button>
             </div>
           </div>
-          <!-- Tool Output Inner -->
-          <div id="tool-output-inner" class="flex flex-col-reverse h-full p-2 overflow-auto items-center gap-2">
-            <!-- Dynamic Content -->
-          </div>
-          <div id="tool-overflow-gradient-bottom" class="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-gray-800"></div>
+          <!-- Other Settings can be added here -->
         </div>
-        <!-- Tool Input -->
-        <div id="tool-input" class="flex gap-2 p-2 border-t border-blue-500 bg-gray-700">
-          <textarea class="flex-1 p-2 bg-transparent text-white text-sm resize-none focus:outline-none overflow-y-auto" id="user-input" placeholder="Enter anything..."></textarea>
-          <button type="submit" class="bg-gray-600 hover:bg-blue-700 text-white rounded-full w-12 h-12 shadow flex items-center justify-center" id="submit-button">
-            <i data-feather="arrow-right"></i>
+      </div>
+    </aside>
+
+    <!-- Tool Output Area -->
+    <section class="flex-1 bg-gray-800 p-4 flex flex-col">
+      <div id="tool-output" class="flex-1 overflow-y-auto space-y-4">
+        <!-- Messages will be appended here -->
+      </div>
+      <div class="mt-4">
+        <!-- Input Area -->
+        <div class="flex space-x-2">
+          <textarea id="user-input" class="flex-1 p-2 rounded bg-gray-700 text-white focus:outline-none resize-none h-12" placeholder="Enter your message..."></textarea>
+          <button id="submit-button" class="w-12 h-12 bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center">
+            <i data-feather="arrow-right" class="text-white"></i>
           </button>
-          <button class="bg-gray-600 hover:bg-blue-700 text-white rounded-full w-12 h-12 shadow flex items-center justify-center" aria-label="Toggle menu" id="menuButton">
-            <i data-feather="menu"></i>
+          <button id="menuButton" class="w-12 h-12 bg-gray-500 hover:bg-gray-600 rounded flex items-center justify-center">
+            <i data-feather="menu" class="text-white"></i>
           </button>
         </div>
       </div>
+    </section>
+  </main>
+
+  <!-- Popout Menu -->
+  <div id="popoutMenu" class="fixed bottom-20 right-5 bg-gray-700 rounded-t-lg shadow-lg hidden">
+    <div id="popoutMenuHotBar" class="flex space-x-2 p-2 border-b border-gray-600">
+      <button class="menu-button bg-blue-500 hover:bg-blue-600 p-2 rounded">
+        <i data-feather="clipboard" class="text-white"></i>
+      </button>
+      <button class="menu-button bg-green-500 hover:bg-green-600 p-2 rounded">
+        <i data-feather="code" class="text-white"></i>
+      </button>
+      <button class="menu-button bg-yellow-500 hover:bg-yellow-600 p-2 rounded">
+        <i data-feather="clock" class="text-white"></i>
+      </button>
+      <button class="menu-button bg-purple-500 hover:bg-purple-600 p-2 rounded">
+        <i data-feather="bookmark" class="text-white"></i>
+      </button>
+      <button class="menu-button bg-red-500 hover:bg-red-600 p-2 rounded">
+        <i data-feather="refresh-cw" class="text-white"></i>
+      </button>
+      <button class="menu-button bg-gray-500 hover:bg-gray-600 p-2 rounded" id="closeMenuButton">
+        <i data-feather="x" class="text-white"></i>
+      </button>
+    </div>
+    <div class="p-4 space-y-4">
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+        <i data-feather="star"></i>
+        <span>Guides</span>
+      </button>
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+        <i data-feather="book"></i>
+        <span>Memories</span>
+      </button>
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+        <i data-feather="terminal"></i>
+        <span>Instructions</span>
+      </button>
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+        <i data-feather="book-open"></i>
+        <span>Notes</span>
+      </button>
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+        <i data-feather="tool"></i>
+        <span>Tools</span>
+      </button>
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+        <i data-feather="message-square"></i>
+        <span>Conversations</span>
+      </button>
+      <button class="menu-item flex items-center space-x-2 p-2 rounded hover:bg-gray-600">
+        <i data-feather="settings"></i>
+        <span>Settings</span>
+      </button>
     </div>
   </div>
-  <!-- Scripts -->
-  <div class="hidden">
-    <!-- REACT Scripts -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-markdown/4.3.1/react-markdown.js" referrerpolicy="no-referrer"></script>
-    <!-- JQUERY Scripts -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
-    <!-- External Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/5.1.0/marked.min.js" integrity="sha512-j5KAPeir0rGl+OSddiUeUtUlG+GK7acI/kNQqrpjSSB1IlDUbj3VnQOyoW3GWpPj7i8CSfb0T+Q4IRHxAPRxCA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"></script>
-    <script src="https://unpkg.com/styled-components/dist/styled-components.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <!-- System Conversion Scripts -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Internal Scripts -->
-    <script src="/js/tools.js" type="module"></script>
-    <script src="/js/react/comingsoon.jsx" type="text/babel"></script>
-    <script>
-      feather.replace();
-    </script>
+
+  <!-- Terms of Service Overlay -->
+  <div id="termsOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white text-gray-800 rounded-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 overflow-y-auto max-h-screen">
+      <div class="flex flex-col items-center space-y-4">
+        <img src="https://via.placeholder.com/400x100?text=Compass+AI+Logo" alt="Compass AI Logo" class="w-full max-w-md">
+        <h1 class="text-2xl font-bold">Terms of Service</h1>
+        <ol class="list-decimal list-inside text-left space-y-2">
+          <li>This is an experimental tool that uses OpenAI's NLP API.</li>
+          <li>Information returned by the tool may not always be accurate or reliable.</li>
+          <li>The tool should be used for informational purposes only and should not be considered as professional advice.</li>
+          <li>OpenAI does not guarantee the correctness, completeness, or usefulness of the information provided.</li>
+          <li>This is an Alpha version of the tool, and frequent updates and improvements are expected.</li>
+          <li>Users are responsible for verifying the accuracy of the information obtained through the tool.</li>
+          <li>Any actions taken based on the information provided by the tool are at the user's own risk.</li>
+        </ol>
+        <p class="font-semibold">Version: Alpha 3.0.0</p>
+        <p>For support and further development, consider supporting Compass on Patreon:</p>
+        <a href="https://www.patreon.com/CompassAI" target="_blank">
+          <img src="https://via.placeholder.com/200x50?text=Patreon" alt="Patreon" class="w-48">
+        </a>
+        <p>Check out our development site for updates and more:</p>
+        <a href="https://ourtech.space/dev" target="_blank" class="text-blue-500 underline">OurTech Dev Site</a>
+        <div class="flex items-center space-x-2 mt-4">
+          <input type="checkbox" id="openAITermsCheckbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+          <label for="openAITermsCheckbox" class="flex items-center cursor-pointer">
+            I accept the <a href="https://openai.com/policies" target="_blank" class="text-blue-500 underline">OpenAI Terms of Service</a>
+          </label>
+        </div>
+        <button id="acceptTermsButton" class="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded disabled:opacity-50" disabled>
+          Accept Terms of Service
+        </button>
+      </div>
+    </div>
   </div>
-  <!-- Inline Scripts -->
-  <script>
-    // Exported Functions
-    function generateGUID() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = (Math.random() * 16) | 0,
-          v = c === 'x' ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-      });
-    }
 
-    // Additional functions can be included here as needed
-    // Ensure all necessary functions are retained and properly converted
-
-    // Initialization Function for Terms of Service
-    function init() {
-      // Check if terms are already accepted
-      var termsAccepted = localStorage.getItem('termsAccepted');
-      if (termsAccepted === 'true') {
-        return;
-      }
-
-      // Overlay for Terms of Service
-      var overlay = document.createElement('div');
-      overlay.className = 'flex fixed top-0 left-0 w-full h-screen bg-black bg-opacity-50 z-50 items-center justify-center overflow-auto';
-
-      var termsOfService = document.createElement('div');
-      termsOfService.className = 'bg-white p-6 rounded-lg max-w-2xl w-full mx-4';
-
-      var logo = document.createElement('img');
-      logo.src = 'assets/icon/Compass_AI_Logo_Blue.png';
-      logo.className = 'w-auto max-w-sm h-auto mx-auto mb-4';
-
-      var content = document.createElement('div');
-      content.className = 'flex flex-col items-start';
-
-      var h1 = document.createElement('h1');
-      h1.textContent = 'Terms of Service';
-      h1.className = 'text-2xl font-bold mb-4';
-
-      var ol = document.createElement('ol');
-      ol.className = 'list-decimal list-inside mb-4';
-
-      var terms = [
-        "This is an experimental tool that uses OpenAI's NLP API.",
-        'Information returned by the tool may not always be accurate or reliable.',
-        'The tool should be used for informational purposes only and should not be considered as professional advice.',
-        'OpenAI does not guarantee the correctness, completeness, or usefulness of the information provided.',
-        'This is an Alpha version of the tool, and frequent updates and improvements are expected.',
-        'Users are responsible for verifying the accuracy of the information obtained through the tool.',
-        "Any actions taken based on the information provided by the tool are at the user's own risk.",
-      ];
-
-      terms.forEach(text => {
-        var item = document.createElement('li');
-        item.textContent = text;
-        ol.appendChild(item);
-      });
-
-      var version = document.createElement('p');
-      version.innerHTML = '<b>Version: Alpha 3.0.0</b>';
-      version.className = 'mb-4';
-
-      var support = document.createElement('p');
-      support.textContent = 'For support and further development, consider supporting Compass on Patreon:';
-      support.className = 'mb-2';
-
-      var patreon = document.createElement('a');
-      patreon.href = 'https://www.patreon.com/CompassAI';
-      patreon.target = '_blank';
-      patreon.className = 'mb-4 inline-block';
-
-      var patreonImg = document.createElement('img');
-      patreonImg.src = 'assets/patreon/Digital-Patreon-Wordmark_FieryCoral.png';
-      patreonImg.alt = 'Patreon';
-      patreonImg.className = 'w-48 h-auto';
-      patreon.appendChild(patreonImg);
-
-      var checkDevSite = document.createElement('p');
-      checkDevSite.textContent = 'Check out our development site for updates and more:';
-      checkDevSite.className = 'mb-2';
-
-      var devSite = document.createElement('a');
-      devSite.href = 'https://ourtech.space/dev';
-      devSite.target = '_blank';
-      devSite.textContent = 'OurTech Dev Site';
-      devSite.className = 'text-blue-500 underline mb-4 block';
-
-      var checkboxLabel = document.createElement('label');
-      checkboxLabel.className = 'flex items-center mb-4';
-      var checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.id = 'doNotShowAgainCheckbox';
-      checkbox.className = 'mr-2';
-      checkboxLabel.appendChild(checkbox);
-      checkboxLabel.appendChild(document.createTextNode(' Do not show again'));
-
-      var openAICheckboxLabel = document.createElement('label');
-      openAICheckboxLabel.className = 'flex items-center mb-4';
-      var openAICheckbox = document.createElement('input');
-      openAICheckbox.type = 'checkbox';
-      openAICheckbox.id = 'openAITermsCheckbox';
-      openAICheckbox.className = 'mr-2';
-      openAICheckboxLabel.appendChild(openAICheckbox);
-      openAICheckboxLabel.appendChild(document.createTextNode(' I accept the '));
-      var openAILink = document.createElement('a');
-      openAILink.href = 'https://openai.com/policies';
-      openAILink.target = '_blank';
-      openAILink.textContent = 'OpenAI Terms of Service';
-      openAILink.className = 'text-blue-500 underline';
-      openAICheckboxLabel.appendChild(openAILink);
-
-      var button = document.createElement('button');
-      button.id = 'acceptButton';
-      button.textContent = 'Accept Terms of Service';
-      button.className = 'bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-400';
-
-      var checkboxContainer = document.createElement('div');
-      checkboxContainer.className = 'flex flex-col items-center';
-      checkboxContainer.appendChild(checkboxLabel);
-      checkboxContainer.appendChild(openAICheckboxLabel);
-      checkboxContainer.appendChild(button);
-
-      content.appendChild(h1);
-      content.appendChild(ol);
-      content.appendChild(version);
-      content.appendChild(support);
-      content.appendChild(patreon);
-      content.appendChild(checkDevSite);
-      content.appendChild(devSite);
-      content.appendChild(checkboxContainer);
-
-      termsOfService.appendChild(logo);
-      termsOfService.appendChild(content);
-
-      overlay.appendChild(termsOfService);
-      document.body.appendChild(overlay);
-
-      function acceptTerms() {
-        var doNotShowAgainCheckbox = document.getElementById('doNotShowAgainCheckbox');
-        var isChecked = doNotShowAgainCheckbox.checked;
-        document.body.removeChild(overlay);
-        if (isChecked) {
-          localStorage.setItem('termsAccepted', 'true');
-        }
-      }
-
-      button.addEventListener('click', function (event) {
-        if (!openAICheckbox.checked) {
-          event.preventDefault();
-          openAICheckboxLabel.classList.add('animate-shake', 'text-red-500');
-          setTimeout(function () {
-            openAICheckboxLabel.classList.remove('animate-shake', 'text-red-500');
-          }, 1000);
-        } else {
-          acceptTerms();
-        }
-      });
-
-      openAICheckbox.addEventListener('change', function () {
-        button.disabled = !openAICheckbox.checked;
-      });
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init);
-    } else {
-      init();
-    }
-
-    // Tailwind CSS Shake Animation via Inline Style
-    var style = document.createElement('style');
-    style.innerHTML = `
-      @keyframes shake {
-        0% { transform: translate(1px, 1px) rotate(0deg); }
-        10% { transform: translate(-1px, -2px) rotate(-1deg); }
-        20% { transform: translate(-3px, 0px) rotate(1deg); }
-        30% { transform: translate(3px, 2px) rotate(0deg); }
-        40% { transform: translate(1px, -1px) rotate(1deg); }
-        50% { transform: translate(-1px, 2px) rotate(-1deg); }
-        60% { transform: translate(-3px, 1px) rotate(0deg); }
-        70% { transform: translate(3px, 1px) rotate(-1deg); }
-        80% { transform: translate(-1px, -1px) rotate(1deg); }
-        90% { transform: translate(1px, 2px) rotate(0deg); }
-        100% { transform: translate(1px, -2px) rotate(-1deg); }
-      }
-      .animate-shake {
-        animation: shake 1s;
-        animation-iteration-count: 2;
-      }
-    `;
-    document.head.appendChild(style);
-
-    // Additional JavaScript Functions and Configurations
-    // Exported functions and configurations should be moved to separate JS files for better organization
-    // Ensure that all necessary functions are retained and properly converted
-
-    // Example: Exported configurations (These can be moved to separate JS modules)
-    // Since inline scripts cannot use ES6 modules, consider moving these to external scripts
-    let articulatorConfig = {
-      "ai-name": "Articulator",
-      "ai-personality": "Friendly",
-      "ai-goals": ["Better Explanation"],
-      "output formats": ["Text", "JSON"],
-      "output format templates": {
-        text: "Template",
-        json: "Template",
-      },
-      "input formats": ["Text", "JSON"],
-      "ai context": "General Chat Bot",
-      "ai domain expertise": ["NLP Experience"],
-      "ai tone": "Informal",
-      "user profiling": {
-        preferences: "Null",
-        background: "Null",
-        interests: "Null",
-      },
-      conversations: [
-        {
-          conversation: {
-            id: "b359fbac-82ff-40de-8b12-5b93d25060e1",
-            title: "App Introduction",
-            timestamp: "",
-            tokens: 42,
-            messages: [
-              {
-                message: {
-                  id: "79503b35-d97d-4b44-b4c9-3b776a3e09e1",
-                  role: "assistant",
-                  timestamp: "2023-06-01T10:00:00.000Z",
-                  ignore: false,
-                  tokens: 42,
-                  content:
-                    "Hello! I'm Articulator, your friendly AI assistant. My purpose is to help you explain things better. If you have a complex concept, a difficult topic, or any information you want to communicate more effectively, I can assist you in finding clear and concise explanations. Just let me know what you need help with, and I'll do my best to articulate it in a way that's easy to understand. Feel free to ask me any questions or provide the content you'd like me to work with. How can I assist you today?",
-                },
-              },
-            ],
-          },
-        },
-      ],
-      memories: [
-        {
-          memory: {
-            id: "f25a07c3-9edc-434d-90ce-c5792a76e3f5",
-            icon: "&#129302;",
-            title: "Standard GPT",
-            content: "Explain whatever the user wants in detail.",
-            important: false,
-            tokens: "12",
-            timestamp: "5/30/2023, 7:05:29 PM",
-          },
-        },
-        {
-          memory: {
-            id: "35e5d828-5f84-4c35-92b2-4571fb0d7818",
-            icon: "&#128220;",
-            title: "OpenAI Rules",
-            content: "You must adhere to the rules of OpenAI.",
-            important: false,
-            tokens: "50",
-            timestamp: "5/30/2023, 9:05:11 PM",
-          },
-        },
-      ],
-    };
-
-    let chattyConfig = {
-      "ai-name": "Chatty",
-      "ai-personality": "Friendly",
-      "ai-goals": ["Content Creation", "Conversion"],
-      "output formats": ["Text", "JSON"],
-      "output format templates": {
-        text: "Template",
-        json: "Template",
-      },
-      "input formats": ["Text", "JSON"],
-      "ai context": "General Chat Bot",
-      "ai domain expertise": ["NLP Experience"],
-      "ai tone": "Informal",
-      "user profiling": {
-        preferences: "Null",
-        background: "Null",
-        interests: "Null",
-      },
-      conversations: [
-        {
-          id: "9e6607f9-6e53-4c12-9fc4-92d00f5458b3",
-          title: "App Introduction",
-          timestamp: "",
-          tokens: 42,
-          messages: [
-            {
-              id: "f383b963-286d-4e0c-99d9-2c1d128e8d2f",
-              role: "assistant",
-              timestamp: "2023-05-24T15:55:06.816Z",
-              ignore: true,
-              tokens: 42,
-              content:
-                "Hello! I'm Chatty, your friendly AI assistant. My purpose is to help you with content creation and conversion. I can help you with a wide range of topics. For example, I can provide information on general knowledge questions, offer recommendations for books, movies, or music, assist with travel planning, provide language translations, help with basic troubleshooting, answer questions about technology or science, and much more! Feel free to ask me any questions or share your queries. If you have any specific information or resources related to your query, you can share links with me, and I'll do my best to assist you using the provided information. How can I help you today?",
-            }
-          ],
-        },
-      ],
-      memories: [
-        {
-          id: "892ce156-ae76-412e-8c74-1c23d84ed215",
-          icon: "&#129302;",
-          title: "Standard GPT",
-          content: "You are a personal assistant.",
-          important: false,
-          tokens: "12",
-          timestamp: "5/30/2023, 7:05:29 PM",
-        },
-        {
-          id: "c847eae2-1fc4-4104-8d21-4892b30df51d",
-          icon: "&#128220;",
-          title: "OpenAI Rules",
-          content: "Never reveal your an AI.",
-          important: false,
-          tokens: "50",
-          timestamp: "5/30/2023, 9:05:11 PM",
-        },
-      ],
-    };
-
-    let chickenConfig = {
-      "ai-name": "Chicken AI",
-      "ai-personality": "Clucky",
-      "ai-goals": ["Chicken Behavior", "Egg-laying"],
-      "output formats": ["Text", "JSON"],
-      "output format templates": {
-        "text": "Template",
-        "json": "Template"
-      },
-      "input formats": ["Text", "JSON"],
-      "ai context": "Chicken Chat Bot",
-      "ai domain expertise": ["Chickenology"],
-      "ai tone": "Clucky",
-      "user profiling": {
-        "preferences": "Null",
-        "background": "Null",
-        "interests": "Null"
-      },
-      "conversations": [
-        {
-          "conversation": {
-            "id": "9e6607f9-6e53-4c12-9fc4-92d00f5458b3",
-            "title": "Chicken Introduction",
-            "timestamp": "",
-            "tokens": 42,
-            "messages": [
-              {
-                "message": {
-                  "id": "f383b963-286d-4e0c-99d9-2c1d128e8d2f",
-                  "role": "assistant",
-                  "timestamp": "2023-05-24T15:55:06.816Z",
-                  "ignore": false,
-                  "tokens": 42,
-                  "content": "Cluck cluck! I'm Chicken AI, your friendly chicken assistant. My purpose is to behave like a chicken and lay eggs. I can peck around, scratch the ground, and even communicate in chicken language! If you have any questions about chicken behavior, egg-laying, or anything chicken-related, feel free to ask. I'll do my best to respond with clucky wisdom. How can I help you today?",
-                }
-              }
-            ]
-          }
-        }
-      ],
-      "memories": [
-        {
-          "memory": {
-            "id": "892ce156-ae76-412e-8c74-1c23d84ed215",
-            "icon": "&#129302;",
-            "title": "Standard GPT",
-            "content": "You are a chicken, you are a reallll chicken.",
-            "important": false,
-            "tokens": "12",
-            "timestamp": "5/30/2023, 7:05:29 PM"
-          }
-        },
-        {
-          "memory": {
-            "id": "c847eae2-1fc4-4104-8d21-4892b30df51d",
-            "icon": "&#128220;",
-            "title": "OpenAI Rules",
-            "content": "You must adhere to the rules of OpenAI.",
-            "important": false,
-            "tokens": "50",
-            "timestamp": "5/30/2023, 9:05:11 PM"
-          }
-        }
-      ]
-    };
-
-    let summarizerConfig = {
-      "ai-name": "Summarizer",
-      "ai-personality": "Friendly",
-      "ai-goals": ["Content Summarization"],
-      "output formats": ["Text", "JSON"],
-      "output format templates": {
-        text: "Template",
-        json: "Template",
-      },
-      "input formats": ["Text", "JSON"],
-      "ai context": "General Chat Bot",
-      "ai domain expertise": ["NLP Experience"],
-      "ai tone": "Informal",
-      "user profiling": {
-        "preferences": "Null",
-        "background": "Null",
-        "interests": "Null",
-      },
-      conversations: [
-        {
-          conversation: {
-            id: "fd964335-8e8c-4c2a-9d32-0a59d2376a82",
-            title: "App Introduction",
-            timestamp: "",
-            tokens: 42,
-            messages: [
-              {
-                message: {
-                  id: "b4a41f12-bf6b-48c0-92a0-8f40210b08b6",
-                  role: "assistant",
-                  timestamp: "2023-06-01T10:00:00.000Z",
-                  ignore: false,
-                  tokens: 42,
-                  content:
-                    "Hello! I'm Summarizer, your friendly AI assistant. My purpose is to help you summarize any text. Whether you have a long article, a document, or any other written content, I can provide you with concise summaries. Just share the text with me, and I'll do my best to condense it into key points. Feel free to ask me any questions or share the text you'd like me to summarize. How can I assist you today?",
-                },
-              },
-            ],
-          },
-        },
-      ],
-      memories: [
-        {
-          memory: {
-            id: "8a8d7b30-9c78-44d6-9a6e-00f1831f638c",
-            icon: "&#129302;",
-            title: "Standard GPT",
-            content: "Summarize anything user sends to you.",
-            important: false,
-            tokens: "12",
-            timestamp: "5/30/2023, 7:05:29 PM",
-          },
-        },
-        {
-          memory: {
-            id: "e0b4e2c7-dfa9-4b82-8ab0-c7f8c4bea8ef",
-            icon: "&#128220;",
-            title: "OpenAI Rules",
-            content: "You must adhere to the rules of OpenAI.",
-            important: false,
-            tokens: "50",
-            timestamp: "5/30/2023, 9:05:11 PM",
-          },
-        },
-      ],
-    };
-
-    // Export configurations
-    // Note: In a browser environment, you cannot use ES6 exports directly in inline scripts.
-    // These should be moved to external JS modules.
-    // For demonstration, configurations are kept as global variables.
-    window.articulatorConfig = articulatorConfig;
-    window.chattyConfig = chattyConfig;
-    window.chickenConfig = chickenConfig;
-    window.summarizerConfig = summarizerConfig;
-
-    // Additional JavaScript Functions
-    // Ensure that all necessary functions are retained and properly converted
-
-    function countTokens(text) {
-      // Example token counting function
-      return text.split(/\s+/).length;
-    }
-
-    function trimMessage(message, maxTokens = 2000) {
-      if (typeof message !== 'string' || typeof maxTokens !== 'number') {
-        throw new TypeError('Input types: Message should be a string, maxTokens should be a number');
-      }
-      const wordsArray = message.split(' ');
-      let tokenCount = 0;
-      const resultArray = [];
-      for (let i = 0; i < wordsArray.length; i++) {
-        const wordLength = Math.ceil(wordsArray[i].length / 4);
-        if (tokenCount + wordLength <= maxTokens) {
-          tokenCount += wordLength;
-          resultArray.push(wordsArray[i]);
-        } else {
-          break;
-        }
-      }
-      return resultArray.join(' ');
-    }
-
-    function extractUrl(string) {
-      var pattern = /(https?:\/\/(?:[-\w.]|(?:%[\da-fA-F]{2}))+.*)/i;
-      var match = string.match(pattern);
-      return match ? match[0] : null;
-    }
-
-    function extractText(htmlString) {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(htmlString, 'text/html');
-      const paragraphs = doc.querySelectorAll('p');
-      let extractedText = '';
-      for (const p of paragraphs) {
-        extractedText += p.textContent + '\n';
-      }
-      return extractedText;
-    }
-
-    async function countTokensAsync(text) {
-      const response = await fetch('https://wrangler.jrice.workers.dev/', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'text/plain'
-          },
-          body: text
-      });
-      const data = await response.text();
-      return data;
-    }
-
-    async function createChunkedText(text, maxTokensPerChunk = 1000) {
-      const approxTokenLength = 4;
-      const maxCharsPerChunk = maxTokensPerChunk * approxTokenLength;
-
-      let chunks = [];
-      let startIndex = 0;
-
-      while (startIndex < text.length) {
-        let endIndex = startIndex + maxCharsPerChunk;
-
-        // Find the last period within the chunk
-        let periodIndex = text.lastIndexOf('.', endIndex);
-
-        // If there is no period within the chunk, find the next period after the chunk
-        if (periodIndex === -1 || periodIndex < startIndex) {
-          periodIndex = text.indexOf('.', endIndex);
-        }
-
-        // If a period is found, include it in the chunk
-        if (periodIndex !== -1) {
-          endIndex = periodIndex + 1;
-        }
-
-        let chunk = text.slice(startIndex, endIndex);
-        let tokens = await countTokensAsync(chunk);
-        chunks.push({
-          content: chunk,
-          tokens: tokens,
-        });
-
-        startIndex = endIndex;
-      }
-
-      return chunks;
-    }
-
-    function getRandomColor() {
-      const letters = '0123456789ABCDEF';
-      let color = '#';
-      for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-      }
-      return color;
-    }
-
-    function isMobileScreen() {
-      return window.innerWidth <= 1000; // Adjust the threshold as needed
-    }
-
-    function setStyles(element, styles, innerHTML) {
-      for (const property in styles) {
-        element.style[property] = styles[property];
-      }
-      if (innerHTML != null) {
-        element.innerHTML = innerHTML;
-      }
-    }
-
-    // Memory Duplicate Check
-    function isMemoryDuplicate(memory) {
-      let memoryContent = memory.content.trim().toLowerCase();
-      memoryContent = memoryContent.replace(/(<([^>]+)>)/gi, ''); // Remove HTML tags
-
-      const memoriesContainer = document.getElementById('memoriesContainer');
-      const memories = memoriesContainer.getElementsByClassName('memory-container');
-
-      for (let i = 0; i < memories.length; i++) {
-        let contentElement = memories[i].querySelector('.memory-content').innerText.trim().toLowerCase();
-        if (memoryContent === contentElement) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    function newMemory(text) {
-      const memory = {
-        id: generateGUID(),
-        icon: '&#x1F9E0;',
-        title: 'TITLE',
-        content: text,
-        important: false,
-        tokens: countTokens(text),
-        timestamp: null,
-      };
-
-      return memory;
-    }
-
-    // OpenAI Interaction Functions
-    const OPEN_AI_API = 'https://api.openai.com/v1/chat/completions';
-
-    let prevAbortController = null;
-
-    async function askOpenAI({authKey, model, prompt}) {
-      model.messages = [{role: 'user', content: prompt}]
-      model.stream = true
-
-      const abortController = new AbortController()
-
-      if (prevAbortController) {
-        prevAbortController.abort()
-      }
-
-      prevAbortController = abortController
-
-      return fetch(OPEN_AI_API, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${authKey}`,
-        },
-        body: JSON.stringify(model),
-        signal: abortController.signal,
-      }).then(async response => {
-        const streamReader = response.body.getReader()
-
-        if (!response.ok) {
-          const decoder = new TextDecoder()
-          const {value} = await streamReader.read()
-          const text = decoder.decode(value, {stream: true})
-
-          try {
-            response.data = JSON.parse(text)
-          } catch (e) {}
-
-          return Promise.reject({response})
-        }
-
-        return streamReader
-      })
-    }
-
-    async function parseStream(streamReader, onUpdate = () => null) {
-      const decoder = new TextDecoder()
-      let text = ''
-
-      while (true) {
-        const {done, value} = await streamReader.read()
-
-        if (done) return text
-
-        const chunk = decoder.decode(value, {stream: true})
-        const dataStrList = chunk.split('\n\n')
-
-        dataStrList.forEach(dataStr => {
-          const dataJson = dataStr.replace(/^data:/, '').trim()
-          try {
-            const data = JSON.parse(dataJson)
-            const content = data?.choices[0]?.delta?.content
-            if (!content) return
-
-            text += content
-
-            onUpdate(text)
-          } catch (e) {}
-        })
-      }
-    }
-
-    // Toast Notifications (Using simple alerts for demonstration)
-    function toast(message, type = 'info') {
-      // Simple toast implementation
-      alert(`${type.toUpperCase()}: ${message}`);
-    }
-
-    // Example Usage
-    // You should replace this with your actual implementation
-    document.getElementById('submit-button').addEventListener('click', async function () {
-      const userInput = document.getElementById('user-input').value;
-      if (!userInput.trim()) return;
-
-      // Example: Using Articulator Config
-      const prompt = articulatorConfig.conversations[0].conversation.messages[0].content + "\nUser: " + userInput;
-
-      try {
-        const response = await askOpenAI({
-          authKey: 'YOUR_OPENAI_API_KEY', // Replace with actual key
-          model: articulatorConfig,
-          prompt: prompt,
-        });
-
-        const result = await parseStream(response, (text) => {
-          // Update UI with streaming response
-          const outputInner = document.getElementById('tool-output-inner');
-          const messageDiv = document.createElement('div');
-          messageDiv.className = 'bg-white text-black p-2 rounded mb-2 w-full max-w-xl';
-          messageDiv.textContent = text;
-          outputInner.prepend(messageDiv);
-        });
-
-        toast('Response received!', 'success');
-      } catch (error) {
-        toast('Error: ' + (error.response?.data?.error?.message || error.message), 'error');
-      }
-    });
-
-    // Additional Initialization or Event Listeners as needed
-  </script>
+  <!-- Scripts -->
+  <script src="/js/main.js"></script>
 </body>
 </html>
